@@ -6,6 +6,8 @@ export class CategoryPage extends BasePage{
   readonly categoryNameInput: Locator;
   readonly parentCategoryNameInput: Locator;
   readonly subCategoryCheckbox: Locator;
+  readonly parentCategoryNameDropdown;
+  readonly parentCategoryNameDropdownFirst;
   readonly lastPageLink: Locator;
   readonly addBtn: Locator;
   readonly submitBtn: Locator;
@@ -16,8 +18,10 @@ export class CategoryPage extends BasePage{
     super(page);
     this.header = page.locator('h3',{ hasText:"Tipos de categorías"});
     this.categoryNameInput = page.locator('input[type="text"][formcontrolname="name"]');
-    this.parentCategoryNameInput = page.locator('ng-select[formcontrolname="categoryId"]');
-    this.subCategoryCheckbox = page.locator('#customCheckMain');
+    this.parentCategoryNameInput = page.locator('div[role="combobox"] > input');
+    this.parentCategoryNameDropdown = page.locator('ng-dropdown-panel[role="listbox"][aria-label="Options list"]');
+    this.parentCategoryNameDropdownFirst =  this.parentCategoryNameDropdown.locator('div[role=option] span.ng-option-label');
+    this.subCategoryCheckbox = page.locator('.text-muted', {hasText: "Es subcategoria?"});
     this.lastPageLink = page.locator('div.card-footer nav ul').locator('nth=-2');
     this.addBtn = page.locator('button.btn-primary', {hasText:"Adicionar"});
     this.submitBtn = page.locator('button[type="submit"]', {hasText:"Aceptar"});
@@ -33,16 +37,16 @@ export class CategoryPage extends BasePage{
   }
   async setParentCategoryName(parentCategoryName:string) {
     await this.parentCategoryNameInput.fill(parentCategoryName);
+    await this.parentCategoryNameDropdownFirst.filter({ hasText: parentCategoryName }).first().click();
   }
   async setAsSubcategory(){
     await this.subCategoryCheckbox.click();
   }
   async clickLastPageButton(){
-    const elements = await this.page.locator('div.card-footer > nav > ul li').all();
+    const elements = await this.page.locator('div.card-footer > nav > ul li a').all();
     const secondToLastElement = elements[elements.length - 2];
     const anchorElement = await secondToLastElement;
     await anchorElement.click();
- 
   }
   async hasCategoryName(name:string): Promise<boolean>{
 
