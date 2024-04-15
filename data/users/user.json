@@ -1,0 +1,5 @@
+{
+    "email": "javier.test74@qubika.com",
+    "password": "12345", 
+    "roles": ["ROLE_ADMIN"]
+}
